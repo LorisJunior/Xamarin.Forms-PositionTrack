@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SQLiteMapaTeste.View.ProfilePage">
+
+    <Grid >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="200"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <Label 
+            x:Name="profileName"
+            HorizontalOptions="Center" 
+            FontSize="Large"/>
+        
+        <Image 
+            x:Name="foto"
+            Grid.Row="1"
+            WidthRequest="180"
+            HeightRequest="180"
+            HorizontalOptions="Center"
+            VerticalOptions="Center"/>
+        
+        <StackLayout Grid.Row="2" Margin="20">
+            <Button 
+                HorizontalOptions="Center"
+                WidthRequest="180"
+                Text="Escolha uma imagem"
+                TextColor="White"
+                CornerRadius="5"
+                BackgroundColor="DodgerBlue"
+                Clicked="OnImageButtonClicked"/>
+            
+            <Entry 
+                x:Name="entry" 
+                Placeholder="Nome" 
+                Margin="0,30"/>
+
+            <Button 
+                HorizontalOptions="Center"
+                WidthRequest="180"
+                Text="Aplicar Nome"
+                TextColor="White"
+                CornerRadius="5"
+                BackgroundColor="DodgerBlue"
+                Clicked="OnNameButtonClicked"/>
+        </StackLayout>
+    </Grid>
+</ContentPage>

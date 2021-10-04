@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SQLiteMapaTeste.View.ChatPage">
+    
+    <Grid >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="200"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Label 
+            x:Name="profileName"
+            HorizontalOptions="Center" 
+            FontSize="Large"/>
+
+        <Image 
+            x:Name="image"
+            Grid.Row="1"
+            BackgroundColor="LightGray"
+            WidthRequest="180"
+            HeightRequest="180"
+            HorizontalOptions="Center"
+            VerticalOptions="Center"/>
+
+        <StackLayout Grid.Row="2" Margin="20">
+            
+
+            <Label
+                VerticalOptions="CenterAndExpand"
+                x:Name="nome" 
+                Text="Nome:" 
+                FontSize="Large"
+                Margin="0,30"/>
+            <Label
+                VerticalOptions="CenterAndExpand"
+                x:Name="latitude" 
+                Text="Latitude:" 
+                FontSize="Large"
+                Margin="0,30"/>
+            <Label
+                VerticalOptions="CenterAndExpand"
+                x:Name="longitude" 
+                Text="Longitude:" 
+                FontSize="Large"
+                Margin="0,30"/>
+
+        </StackLayout>
+    </Grid>
+</ContentPage>

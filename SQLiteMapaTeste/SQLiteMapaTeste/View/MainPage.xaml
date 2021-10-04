@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SQLiteMapaTeste.MainPage">
+
+    <StackLayout>
+        <Frame BackgroundColor="#2196F3" Padding="24" CornerRadius="0">
+            <Label 
+                Text="SQLite + Mapa" 
+                HorizontalTextAlignment="Center" 
+                TextColor="White" 
+                FontSize="36"/>
+        </Frame>
+        <Grid VerticalOptions="Center">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="250"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="200"/>
+            </Grid.RowDefinitions>
+            <Label x:Name="countLabel"/>
+            <Button
+                Grid.Row="1"
+                WidthRequest="200"
+                BackgroundColor="DodgerBlue"
+                Text="Next" 
+                TextColor="White"
+                CornerRadius="5"
+                VerticalOptions="Center" 
+                HorizontalOptions="Center"
+                Clicked="Button_Clicked"
+                />
+        </Grid>
+
+    </StackLayout>
+
+</ContentPage>
