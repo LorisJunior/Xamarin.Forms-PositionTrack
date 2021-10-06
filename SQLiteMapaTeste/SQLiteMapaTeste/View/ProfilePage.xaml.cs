@@ -27,14 +27,10 @@ namespace SQLiteMapaTeste.View
         {
             base.OnAppearing();
             {
-                using (var db = new SQLiteConnection(App.DatabasePath))
+                profileName.Text = App.user.Nome;
+                if (App.user.Buffer != null)
                 {
-                    db.CreateTable<User>();
-                    profileName.Text = App.user.Nome;
-                    if (App.user.Buffer != null)
-                    {
-                        foto.Source = ImageSource.FromStream(() => new MemoryStream(App.user.Buffer));
-                    }
+                    foto.Source = ImageSource.FromStream(() => new MemoryStream(App.user.Buffer));
                 }
             }
         }
