@@ -1,8 +1,15 @@
-﻿using Plugin.Geolocator;
+﻿using FFImageLoading.Forms;
+using FFImageLoading.Transformations;
+using FFImageLoading.Work;
+using ImageCircle.Forms.Plugin.Abstractions;
+using Plugin.Geolocator;
 using SQLiteMapaTeste.Model;
+using SQLiteMapaTeste.Service;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.GoogleMaps;
 using Xamarin.Forms.Xaml;
@@ -25,7 +32,7 @@ namespace SQLiteMapaTeste.View
                 {
                     raio = value;
                     OnPropertyChanged();
-                    UpdateCircleRadius();
+                    circle.Radius = Distance.FromMeters(raio);
                 }
             }
         }
@@ -38,25 +45,24 @@ namespace SQLiteMapaTeste.View
             map.MyLocationEnabled = true;
             map.UiSettings.MyLocationButtonEnabled = true;
             map.PinClicked += OnPinClicked;
+            CreatePin(App.user, true);
+            map.MoveToRegion(MapSpan.FromCenterAndRadius(new Position(App.user.Latitude, App.user.Longitude), Distance.FromMeters(5000)), true);
         }
         protected async override void OnAppearing()
         {
             base.OnAppearing();
 
             //Pega a posição do usuário e começa a receber as atualizações de posição
-            CreatePin(App.user);
-
             locator = CrossGeolocator.Current;
-
             locator.PositionChanged += Locator_PositionChanged;
             await locator.StartListeningAsync(new TimeSpan(0, 0, 0), 100);
             var position = await locator.GetPositionAsync();
 
-            App.user = User.UpdatePosition(App.user, position);
-           
-            var center = new Position(position.Latitude, position.Longitude);
 
-            userPin.Position = center;
+            var center = new Position(position.Latitude, position.Longitude);
+            App.user = User.UpdatePosition(App.user, center);
+            CreatePin(App.user, true);
+
             CreateCircleShapeAt(center);
             map.MoveToRegion(MapSpan.FromCenterAndRadius(center, Distance.FromMeters(5000)), true);
         }
@@ -65,53 +71,74 @@ namespace SQLiteMapaTeste.View
             base.OnDisappearing();
 
             CleanMap(map.Pins);
+
             //Para de receber as posições
             await locator.StopListeningAsync();
         }
         private void Locator_PositionChanged(object sender, Plugin.Geolocator.Abstractions.PositionEventArgs e)
         {
             var center = new Position(e.Position.Latitude, e.Position.Longitude);
-            userPin.Position = center;
+
+            try
+            {
+                App.user = User.UpdatePosition(App.user, center);
+                userPin.Position = center;
+
+            }
+            catch (Exception)
+            {
+            }
             CreateCircleShapeAt(center);
             map.MoveToRegion(MapSpan.FromCenterAndRadius(center, Distance.FromMeters(5000)), true);
-        }
-        private void NearUsersClicked(object sender, EventArgs e)
-        {
-            CleanMap(map.Pins);
-            CreatePin(App.user);
-            AddNearUsers();
         }
         public void OnPinClicked(object sender, PinClickedEventArgs e)
         {
             Pin pin = e.Pin;
             int userId = (int)pin.Tag;
-            var user = User.GetById(userId);
+            var user = User.GetUser(userId);
 
             //Envio uma mensagem para a TabPage ir para a ChatPage
             MessagingCenter.Send<object, int>(user, "click", 2);
         }
-        public void CreatePin(User user)
+        public void CreatePin(User user, bool isMyPin)
         {
-            userPin = new Pin()
+            var stream = new MemoryStream(user.Buffer);
+            Pin pin = new Pin()
             {
-                Icon = BitmapDescriptorFactory.FromStream(new MemoryStream(user.Buffer)),
+                Icon = BitmapDescriptorFactory.FromView(new BindingPinView(stream)),
                 Type = PinType.Place,
                 Label = "Olá, vms comprar juntos!",
                 ZIndex = 5,
                 Tag = user.Id
             };
-            if(user.Latitude != 0 || user.Longitude != 0)
+            
+            if (user.Latitude != 0 || user.Longitude != 0)
             {
-                userPin.Position = new Position(user.Latitude, user.Longitude);
+                pin.Position = new Position(user.Latitude, user.Longitude);
             }
-            map.Pins.Add(userPin);
+
+            if (isMyPin == true)
+            {
+                userPin = pin;
+                map.Pins.Add(userPin);
+            }
+            else
+            {
+                map.Pins.Add(pin);
+            }
+        }
+        private void NearUsersClicked(object sender, EventArgs e)
+        {
+            CleanMap(map.Pins);
+            CreatePin(App.user, true);
+            AddNearUsers();
         }
         public void AddNearUsers()
         {
             var users = User.GetNearUsers(Raio);
             foreach (var user in users)
             {
-                CreatePin(user);
+                CreatePin(user, false);
             }
         }
         public void CreateCircleShapeAt(Position position)
@@ -127,25 +154,33 @@ namespace SQLiteMapaTeste.View
 
             map.Circles.Add(circle);
         }
-        public void UpdateCircleRadius()
-        {
-            circle.Radius = Distance.FromMeters(Raio);
-        }
         public void CleanMap(IEnumerable<object> o)
         {
             if (o is IList<Circle> && o != null)
             {
-                map.Circles.Clear();
+                try
+                {
+                    map.Circles.Clear();
+                }
+                catch (Exception)
+                {
+                }
             }
             else if (o is IList<Pin> && o != null)
             {
-                map.Pins.Clear();
+                try
+                {
+                    map.Pins.Clear();
+                }
+                catch (Exception)
+                {
+                }
             }
             else
             {
                 return;
             }
         }
-
+        
     }
 }

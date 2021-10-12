@@ -1,10 +1,11 @@
-﻿using Plugin.Geolocator.Abstractions;
-using SQLite;
+﻿using SQLite;
 using SQLiteMapaTeste.Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using Xamarin.Forms.GoogleMaps;
 
 namespace SQLiteMapaTeste.Model
 {
@@ -12,10 +13,16 @@ namespace SQLiteMapaTeste.Model
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
+        public string Key { get; set; }
         public string Nome { get; set; }
+        public string Email { get; set; }
+        public string Sobre { get; set; }
         public byte[] Buffer { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
+        public bool DisplayUserInMap { get; set; }
+
+        public FirebaseService fbService = new FirebaseService();
 
         public static User UpdatePosition(User user, Position position)
         {
@@ -29,7 +36,7 @@ namespace SQLiteMapaTeste.Model
             return user;
         }
 
-        public static User GetById(int userId)
+        public static User GetUser(int userId)
         {
             User user;
             using (var db = new SQLiteConnection(App.DatabasePath))
@@ -47,9 +54,21 @@ namespace SQLiteMapaTeste.Model
             using (var db = new SQLiteConnection(App.DatabasePath))
             {
                 db.CreateTable<User>();
-                users = db.Table<User>().ToList().Where(u => u.Id != App.user.Id &&
-                (DistanceService.CompareDistance(App.user.Latitude, App.user.Longitude, u.Latitude, u.Longitude) <= (raio / 1000)));
+                users = 
+                    db.Table<User>()
+                    .ToList()
+                    .Where(u => u.Id != App.user.Id && 
+                    DistanceService
+                    .CompareDistance(App.user.Latitude, App.user.Longitude, u.Latitude, u.Longitude) <= (raio / 1000));
             }
+            return users;
+        }
+
+        public async Task<IEnumerable<User>> GetNearUsersFb(double raio)
+        {
+            IEnumerable<User> users;
+            users = (await fbService.GetUsers()).Where(u => u.Id != App.user.Id &&
+            (DistanceService.CompareDistance(App.user.Latitude, App.user.Longitude, u.Latitude, u.Longitude) <= (raio / 1000)));
             return users;
         }
     }

@@ -10,12 +10,8 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Label 
-            x:Name="profileName"
-            HorizontalOptions="Center" 
-            FontSize="Large"/>
-
         <Image 
+            BackgroundColor="red"
             x:Name="foto"
             Grid.Row="1"
             WidthRequest="180"
@@ -25,10 +21,28 @@
 
         <StackLayout Grid.Row="2" Margin="20">
             <Entry 
-                x:Name="entry" 
-                Placeholder="Nome" 
-                Margin="0,30"/>
-            <Button 
+                x:Name="nome" 
+                Placeholder="Nome"/>
+
+            <Entry 
+                x:Name="email" 
+                Placeholder="Email" />
+
+            <Entry 
+                x:Name="sobre" 
+                Placeholder="Sobre"/>
+
+            <StackLayout Orientation="Horizontal">
+                <Button 
+                HorizontalOptions="Center"
+                WidthRequest="180"
+                Text="Add Foto"
+                TextColor="White"
+                CornerRadius="5"
+                BackgroundColor="DodgerBlue"
+                Clicked="AddFoto_Clicked"/>
+                
+                <Button 
                 HorizontalOptions="Center"
                 WidthRequest="180"
                 Text="Add"
@@ -36,7 +50,9 @@
                 CornerRadius="5"
                 BackgroundColor="DodgerBlue"
                 Clicked="AddUserClicked"/>
-            <Label x:Name="labelCount" FontSize="Large" HorizontalOptions="Center"/>
+            </StackLayout>
+            
+            <Label x:Name="labelCount" FontSize="28" FontAttributes="Bold" HorizontalOptions="Center"/>
 
         </StackLayout>
     </Grid>

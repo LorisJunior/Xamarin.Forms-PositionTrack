@@ -6,6 +6,10 @@ using Android.Runtime;
 using Android.OS;
 using System.IO;
 using Android;
+using ImageCircle.Forms.Plugin;
+using ImageCircle.Forms.Plugin.Droid;
+using FFImageLoading.Forms.Platform;
+using Xamarin.Forms.GoogleMaps.Android;
 
 namespace SQLiteMapaTeste.Droid
 {
@@ -25,6 +29,9 @@ namespace SQLiteMapaTeste.Droid
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             Xamarin.FormsGoogleMaps.Init(this, savedInstanceState);
+            CachedImageRenderer.Init(enableFastRenderer: false);
+            CachedImageRenderer.InitImageViewHandler();
+            ImageCircleRenderer.Init();
 
             var databasePath = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments), "MyData.db");
             LoadApplication(new App(databasePath));
