@@ -11,14 +11,14 @@ namespace SQLiteMapaTeste.Service
 {
     public class FirebaseService
     {
-        FirebaseClient firebase = new FirebaseClient("https://dbteste-cbb09-default-rtdb.firebaseio.com/");
+        public static FirebaseClient firebase = new FirebaseClient("https://dbteste-cbb09-default-rtdb.firebaseio.com/");
 
         public async Task<bool> AddUser(User user)
         {
             try
             {
-                user.Key = await GetKey();
-                await UpdateUserAsync(user.Key, user);
+                user.Key = await GetKey("Users");
+                await UpdateUserAsync(user);
             }
             catch (Exception)
             {
@@ -27,21 +27,21 @@ namespace SQLiteMapaTeste.Service
 
             return true;
         }
-        private async Task<string> GetKey()
+        private async Task<string> GetKey(string path)
         {
             //Esse método cria um documento vazio e retorna uma chave
             var doc = await firebase
-               .Child("Users")
-                  .PostAsync(new User());
+               .Child(path)
+                  .PostAsync(1);
             return doc.Key;
         }
-        public async Task<bool> UpdateUserAsync(string key, User user)
+        public async Task<bool> UpdateUserAsync(User user)
         {
             try
             {
                 await firebase
                     .Child("Users")
-                    .Child(key)
+                    .Child(user.Key)
                     .PutAsync(user);
             }
             catch (Exception)
@@ -90,16 +90,14 @@ namespace SQLiteMapaTeste.Service
               .OnceAsync<User>()).Select(item => new User
               {
                   Key = item.Object.Key,
-                  Id = item.Object.Id,
                   Nome = item.Object.Nome,
                   Email = item.Object.Email,
                   Sobre = item.Object.Sobre,
                   Buffer = item.Object.Buffer,
                   Latitude = item.Object.Latitude,
-                  Longitude = item.Object.Longitude
+                  Longitude = item.Object.Longitude,
+                  Items = item.Object.Items
               }).ToList();
         }
-
-        
     }
 }

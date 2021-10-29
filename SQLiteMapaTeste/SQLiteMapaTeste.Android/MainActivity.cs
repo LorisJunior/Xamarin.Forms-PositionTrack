@@ -28,8 +28,9 @@ namespace SQLiteMapaTeste.Droid
 
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
+            Android.Glide.Forms.Init(this);
             Xamarin.FormsGoogleMaps.Init(this, savedInstanceState);
-            CachedImageRenderer.Init(enableFastRenderer: false);
+            CachedImageRenderer.Init(enableFastRenderer: true);
             CachedImageRenderer.InitImageViewHandler();
             ImageCircleRenderer.Init();
 

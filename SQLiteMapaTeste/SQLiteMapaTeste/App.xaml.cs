@@ -13,6 +13,7 @@ namespace SQLiteMapaTeste
         public static Assembly assembly = null;
         public static User user = new User();
         public static string DatabasePath = string.Empty;
+        public static string Key = "-Mmga23BdqP7Hp9-vkjV";
         public App()
         {
             assembly = GetType().GetTypeInfo().Assembly;

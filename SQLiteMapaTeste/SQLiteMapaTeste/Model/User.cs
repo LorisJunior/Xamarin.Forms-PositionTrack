@@ -21,6 +21,9 @@ namespace SQLiteMapaTeste.Model
         public double Latitude { get; set; }
         public double Longitude { get; set; }
         public bool DisplayUserInMap { get; set; }
+        public List<Item> Items{ get; set; }
+        public List<Notification> Notifications { get; set; }
+        public List<Conversa> Conversas { get; set; }
 
         public FirebaseService fbService = new FirebaseService();
 

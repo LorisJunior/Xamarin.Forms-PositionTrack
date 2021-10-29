@@ -1,4 +1,7 @@
-﻿using SQLite;
+﻿using Plugin.ImageEdit;
+using Plugin.Media;
+using Plugin.Media.Abstractions;
+using SQLite;
 using SQLiteMapaTeste.Model;
 using SQLiteMapaTeste.Service;
 using System;
@@ -38,9 +41,14 @@ namespace SQLiteMapaTeste.View
         {
             try
             {
-                var img = await MediaPicker.PickPhotoAsync();
-                var stream = await img.OpenReadAsync();
+                var opt = new PickMediaOptions();
+                opt.CompressionQuality = 50;
+                opt.PhotoSize = PhotoSize.Medium;
+                var i = await CrossMedia.Current.PickPhotoAsync(opt);
+                var stream = i.GetStream();
+
                 App.user.Buffer = ImageService.ConvertImageToByte(stream);
+                            
                 foto.Source = ImageSource.FromStream(() => new MemoryStream(App.user.Buffer));
             }
             catch (Exception)

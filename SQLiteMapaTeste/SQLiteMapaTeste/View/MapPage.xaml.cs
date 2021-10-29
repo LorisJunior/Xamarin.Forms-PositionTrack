@@ -3,8 +3,10 @@ using FFImageLoading.Transformations;
 using FFImageLoading.Work;
 using ImageCircle.Forms.Plugin.Abstractions;
 using Plugin.Geolocator;
+using Plugin.ImageEdit;
 using SQLiteMapaTeste.Model;
 using SQLiteMapaTeste.Service;
+using SQLiteMapaTeste.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,9 +20,12 @@ namespace SQLiteMapaTeste.View
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MapPage : ContentPage
     {
-        Circle circle;
+        Circle circle = new Circle();
+
         Plugin.Geolocator.Abstractions.IGeolocator locator = null;
+
         Pin userPin;
+
         private double raio = 3000;
 
         public double Raio
@@ -36,13 +41,11 @@ namespace SQLiteMapaTeste.View
                 }
             }
         }
+
         public MapPage()
         {
-            circle = new Circle();
             InitializeComponent();
             BindingContext = this;
-
-            map.MyLocationEnabled = true;
             map.UiSettings.MyLocationButtonEnabled = true;
             map.PinClicked += OnPinClicked;
             CreatePin(App.user, true);
@@ -102,10 +105,22 @@ namespace SQLiteMapaTeste.View
         }
         public void CreatePin(User user, bool isMyPin)
         {
-            var stream = new MemoryStream(user.Buffer);
+            
+
+
+
+            Stream stream = null;
+            try
+            {
+                stream = new MemoryStream(user.Buffer);
+            }
+            catch (Exception)
+            {
+            }
             Pin pin = new Pin()
             {
                 Icon = BitmapDescriptorFactory.FromView(new BindingPinView(stream)),
+                //Icon = BitmapDescriptorFactory.FromStream(new MemoryStream(croped)),
                 Type = PinType.Place,
                 Label = "Olá, vms comprar juntos!",
                 ZIndex = 5,

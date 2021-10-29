@@ -26,7 +26,7 @@ namespace SQLiteMapaTeste
         {
             using (var db = new SQLiteConnection(App.DatabasePath))
             {
-                db.CreateTable<User>();
+               // db.CreateTable<User>();
 
                 var checkDb = db.Table<User>().ToList();
                 

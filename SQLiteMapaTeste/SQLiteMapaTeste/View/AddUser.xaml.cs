@@ -37,12 +37,33 @@ namespace SQLiteMapaTeste.View
             newUser.Longitude = App.user.Longitude;
             newUser.DisplayUserInMap = true;
             newUser.Key = string.Empty;
-            using (var db = new SQLiteConnection(App.DatabasePath))
+            newUser.Items = new List<Item>
+            {
+                new Item
+                {
+                    Temp = 1,
+                },
+            };
+            newUser.Notifications = new List<Notification>
+            {
+                new Notification
+                {
+                    Temp = 1,
+                },
+            };
+            newUser.Conversas = new List<Conversa>
+            {
+                new Conversa
+                {
+                    Temp = 1,
+                },
+            };
+            /*using (var db = new SQLiteConnection(App.DatabasePath))
             {
                 db.CreateTable<User>();
                 int row = db.Insert(newUser);
                 labelCount.Text = db.Table<User>().ToList().Count.ToString();
-            }
+            }*/
             await fbService.AddUser(newUser);
         }
 
@@ -50,7 +71,7 @@ namespace SQLiteMapaTeste.View
         {
             try
             {
-                var img = await MediaPicker.PickPhotoAsync();
+                var img = await MediaPicker.PickPhotoAsync(new MediaPickerOptions { Title = ""});
                 var stream = await img.OpenReadAsync();
                 buffer = ImageService.ConvertImageToByte(stream);
                 foto.Source = ImageSource.FromStream(() => new MemoryStream(buffer));

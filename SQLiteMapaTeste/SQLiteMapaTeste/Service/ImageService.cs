@@ -44,6 +44,11 @@ namespace SQLiteMapaTeste.Service
         public static Xamarin.Forms.View GetIcon(User user, double width, double height, float borderThickness = 5)
         {
 
+            FFImageLoading.ImageService.Instance.LoadUrl("")
+                .Retry(3, 200)
+                .DownSample(75, 75);
+            var a = new EmbeddedResourceImageSource("p1.png", App.assembly);
+
             TaskCompletionSource<Stream> imageTcs = new TaskCompletionSource<Stream>();
             imageTcs.TrySetResult(new MemoryStream(user.Buffer));
 
